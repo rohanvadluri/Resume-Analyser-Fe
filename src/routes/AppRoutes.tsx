@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
@@ -12,32 +12,43 @@ import JobMatchHistory from "../pages/history/JobMatchHistory";
 import ProfilePage from "../pages/profile/ProfilePage";
 
 import DashboardLayout from "../layouts/DashboardLayout";
+import ProtectedRoute from "./ProtectedRoute";
+import ForgotPassword from "../pages/auth/ForgotPassword";
 
 function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-          {/* Public Routes */}
-          <Route path="/login" element={<Login />} />
+        {/* ================================================= */}
+        {/* PUBLIC ROUTES */}
+        {/* ================================================= */}
 
-          <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/register" element={<Register />} />
+        
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-          {/* Authenticated Application */}
+        {/* ================================================= */}
+        {/* PROTECTED APPLICATION */}
+        {/* ================================================= */}
+
+        <Route element={<ProtectedRoute />}>
           <Route element={<DashboardLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
 
-          <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/resume" element={<ResumePage />} />
 
-          <Route path="/resume" element={<ResumePage />} />
+            <Route path="/analysis" element={<AnalysisPage />} />
 
-          <Route path="/analysis" element={<AnalysisPage />} />
+            <Route path="/job-matching" element={<JobMatchingPage />} />
 
-          <Route path="/job-matching" element={<JobMatchingPage />} />
+            <Route path="/history/analysis" element={<AnalysisHistory />} />
 
-          <Route path="/history/analysis" element={<AnalysisHistory />} />
+            <Route path="/history/job-matches" element={<JobMatchHistory />} />
 
-          <Route path="/history/job-matches" element={<JobMatchHistory />} />
-
-          <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
