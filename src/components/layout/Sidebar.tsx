@@ -18,12 +18,12 @@ interface SidebarProps {
 
 function Sidebar({ isOpen, onClose }: SidebarProps) {
   const { user, logout } = useAuth();
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const handleLogout = () => {
+  const handleLogout = () => {
     logout();
     navigate("/login", { replace: true });
-};
+  };
   const navigationItems = [
     {
       name: "Dashboard",
@@ -248,8 +248,8 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
             <button
               type="button"
               title="Logout"
-onClick={handleLogout}          
-    className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-rose-50 hover:text-rose-600"
+              onClick={handleLogout}
+              className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-rose-50 hover:text-rose-600"
             >
               <LogOut className="h-4 w-4" />
             </button>
