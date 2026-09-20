@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 interface ScoreRingProps {
     score: number;
     size?: number;
@@ -8,42 +10,107 @@ function ScoreRing({
     size = 150,
 }: ScoreRingProps) {
 
+    const [animatedScore, setAnimatedScore] = useState(0);
+
     const radius = 52;
     const circumference = 2 * Math.PI * radius;
 
-    const progress =
-        circumference - (score / 100) * circumference;
+    /*
+     * Animate score from 0 to actual score
+     */
+    useEffect(() => {
 
+        let currentScore = 0;
+
+        const duration = 1000;
+        const intervalTime = 15;
+
+        const increment =
+            score / (duration / intervalTime);
+
+        const interval = setInterval(() => {
+
+            currentScore += increment;
+
+            if (currentScore >= score) {
+
+                currentScore = score;
+
+                clearInterval(interval);
+            }
+
+            setAnimatedScore(Math.round(currentScore));
+
+        }, intervalTime);
+
+        return () => clearInterval(interval);
+
+    }, [score]);
+
+
+    /*
+     * Score color
+     */
     const getScoreColor = () => {
 
-        if (score >= 80) {
+        if (animatedScore >= 80) {
             return "text-emerald-500";
         }
 
-        if (score >= 60) {
+        if (animatedScore >= 60) {
             return "text-amber-500";
         }
 
         return "text-rose-500";
     };
 
+
+    /*
+     * Ring glow
+     */
+    const getGlowColor = () => {
+
+        if (animatedScore >= 80) {
+            return "drop-shadow-[0_0_8px_rgba(16,185,129,0.35)]";
+        }
+
+        if (animatedScore >= 60) {
+            return "drop-shadow-[0_0_8px_rgba(245,158,11,0.35)]";
+        }
+
+        return "drop-shadow-[0_0_8px_rgba(244,63,94,0.35)]";
+    };
+
+
+    /*
+     * Score label
+     */
     const getScoreLabel = () => {
 
-        if (score >= 80) {
+        if (animatedScore >= 80) {
             return "Excellent";
         }
 
-        if (score >= 60) {
+        if (animatedScore >= 60) {
             return "Good";
         }
 
         return "Needs Improvement";
     };
 
+
+    /*
+     * Ring progress
+     */
+    const progress =
+        circumference -
+        (animatedScore / 100) * circumference;
+
+
     return (
         <div className="flex flex-col items-center">
 
-            {/* Score Ring */}
+            {/* SCORE RING */}
 
             <div
                 className="relative"
@@ -57,10 +124,10 @@ function ScoreRing({
                     width={size}
                     height={size}
                     viewBox="0 0 120 120"
-                    className="-rotate-90"
+                    className={`-rotate-90 ${getGlowColor()}`}
                 >
 
-                    {/* Background Ring */}
+                    {/* Background */}
 
                     <circle
                         cx="60"
@@ -72,7 +139,8 @@ function ScoreRing({
                         className="text-slate-100"
                     />
 
-                    {/* Progress Ring */}
+
+                    {/* Progress */}
 
                     <circle
                         cx="60"
@@ -84,17 +152,32 @@ function ScoreRing({
                         strokeLinecap="round"
                         strokeDasharray={circumference}
                         strokeDashoffset={progress}
-                        className={`${getScoreColor()} transition-all duration-1000`}
+                        className={`
+                            ${getScoreColor()}
+                            transition-all
+                            duration-300
+                            ease-out
+                        `}
                     />
 
                 </svg>
 
-                {/* Center Content */}
+
+                {/* CENTER */}
 
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
 
-                    <span className="text-3xl font-bold tracking-tight text-slate-900">
-                        {score}
+                    <span
+                        className="
+                            text-3xl
+                            font-bold
+                            tracking-tight
+                            text-slate-900
+                            transition-all
+                            duration-300
+                        "
+                    >
+                        {animatedScore}
                     </span>
 
                     <span className="text-xs font-medium text-slate-400">
@@ -105,7 +188,8 @@ function ScoreRing({
 
             </div>
 
-            {/* Label */}
+
+            {/* LABEL */}
 
             <div className="mt-3">
 
@@ -113,6 +197,8 @@ function ScoreRing({
                     className={`
                         text-sm
                         font-semibold
+                        transition-colors
+                        duration-300
                         ${getScoreColor()}
                     `}
                 >
