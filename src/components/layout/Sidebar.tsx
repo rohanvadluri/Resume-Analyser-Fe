@@ -46,9 +46,14 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
       icon: Target,
     },
     {
-      name: "History",
+      name: "Analysis History",
       path: "/history/analysis",
       icon: History,
+    },
+    {
+      name: "Job Match History",
+      path: "/history/job-matches",
+      icon: Target,
     },
   ];
 

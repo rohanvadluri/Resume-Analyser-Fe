@@ -6,6 +6,7 @@ import type {
     ResumeResponse,
 } from "../types/resume";
 
+
 /**
  * Upload Resume
  */
@@ -40,6 +41,17 @@ export const getResumeDetails = async (
     return response.data;
 };
 
+/**
+ * Get Resume Details for the logged-in user
+ */
+export const getMyResume = async (): Promise<ResumeResponse> => {
+
+    const response = await apiClient.get<ResumeResponse>(
+        API_ENDPOINTS.resume.myResume
+    );
+
+    return response.data;
+}; 
 
 /**
  * Delete Resume
