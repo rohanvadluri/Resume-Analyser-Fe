@@ -1,43 +1,43 @@
-    import { useState } from "react";
-    import { Outlet } from "react-router-dom";
+        import { useState } from "react";
+        import { Outlet } from "react-router-dom";
 
-    import Sidebar from "../components/layout/Sidebar";
-    import Navbar from "../components/layout/Navbar";
+        import Sidebar from "../components/layout/Sidebar";
+        import Navbar from "../components/layout/Navbar";
 
-    function DashboardLayout() {
+        function DashboardLayout() {
 
-        const [sidebarOpen, setSidebarOpen] = useState(false);
+            const [sidebarOpen, setSidebarOpen] = useState(false);
 
-        return (
-            <div className="flex min-h-screen bg-slate-50">
+            return (
+                <div className="flex min-h-screen bg-slate-50">
 
-                {/* Sidebar */}
+                    {/* Sidebar */}
 
-                <Sidebar
-                    isOpen={sidebarOpen}
-                    onClose={() => setSidebarOpen(false)}
-                />
-
-                {/* Main Area */}
-
-                <div className="flex min-w-0 flex-1 flex-col">
-
-                    {/* Navbar */}
-
-                    <Navbar
-                        onMenuClick={() => setSidebarOpen(true)}
+                    <Sidebar
+                        isOpen={sidebarOpen}
+                        onClose={() => setSidebarOpen(false)}
                     />
 
-                    {/* Page Content */}
+                    {/* Main Area */}
 
-                    <main className="flex-1 p-6">
-                        <Outlet />
-                    </main>
+                    <div className="flex min-w-0 flex-1 flex-col">
+
+                        {/* Navbar */}
+
+                        <Navbar
+                            onMenuClick={() => setSidebarOpen(true)}
+                        />
+
+                        {/* Page Content */}
+
+                        <main className="flex-1 p-6">
+                            <Outlet />
+                        </main>
+
+                    </div>
 
                 </div>
+            );
+        }
 
-            </div>
-        );
-    }
-
-    export default DashboardLayout;
+        export default DashboardLayout;

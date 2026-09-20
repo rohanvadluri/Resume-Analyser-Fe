@@ -1,28 +1,177 @@
+import { useEffect, useState } from "react";
 import {
     CheckCircle2,
     Target,
     XCircle,
 } from "lucide-react";
 
+import { useNavigate } from "react-router-dom";
+
 import Card from "../ui/Card";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 
+import {
+    getJobMatchHistory,
+    getJobMatchDetails,
+} from "../../services/jobMatchingService";
+
+import type { JobMatchDetailResponse } from "../../types/jobMatching";
+
 function JobMatchOverviewCard() {
 
-    const matchScore = 92;
+    const navigate = useNavigate();
 
-    const matchingSkills = [
-        "Java",
-        "Spring Boot",
-        "REST APIs",
-        "PostgreSQL",
-    ];
+    const [jobMatch, setJobMatch] =
+        useState<JobMatchDetailResponse | null>(null);
 
-    const missingSkills = [
-        "Docker",
-        "Jenkins",
-    ];
+    const [isLoading, setIsLoading] =
+        useState(true);
+
+
+    useEffect(() => {
+
+        loadLatestJobMatch();
+
+    }, []);
+
+
+    const loadLatestJobMatch = async () => {
+
+        try {
+
+            setIsLoading(true);
+
+            /*
+             * Get latest job match from history
+             */
+            const historyResponse =
+                await getJobMatchHistory(0, 1);
+
+
+            if (
+                historyResponse.content &&
+                historyResponse.content.length > 0
+            ) {
+
+                const latestMatch =
+                    historyResponse.content[0];
+
+
+                /*
+                 * Get complete details using jobMatchId
+                 */
+                const detailResponse =
+                    await getJobMatchDetails(
+                        latestMatch.jobMatchId
+                    );
+
+
+                setJobMatch(detailResponse);
+
+            } else {
+
+                setJobMatch(null);
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Failed to load job match:",
+                error
+            );
+
+            setJobMatch(null);
+
+        } finally {
+
+            setIsLoading(false);
+
+        }
+    };
+
+
+    /*
+     * Convert matching skills from
+     * comma-separated string to array.
+     *
+     * Example:
+     * "Java, Spring Boot, React"
+     *
+     * becomes:
+     * ["Java", "Spring Boot", "React"]
+     */
+    const matchingSkills =
+        jobMatch?.matchingSkills
+            ? jobMatch.matchingSkills
+                .split(",")
+                .map((skill) => skill.trim())
+                .filter(Boolean)
+            : [];
+
+
+    /*
+     * Convert missing skills from
+     * comma-separated string to array.
+     */
+    const missingSkills =
+        jobMatch?.missingSkills
+            ? jobMatch.missingSkills
+                .split(",")
+                .map((skill) => skill.trim())
+                .filter(Boolean)
+            : [];
+
+
+    /*
+     * Get badge text based on match score.
+     */
+    const getMatchBadge = () => {
+
+        if (!jobMatch) {
+            return "No Match";
+        }
+
+        if (jobMatch.matchScore >= 80) {
+            return "Strong Match";
+        }
+
+        if (jobMatch.matchScore >= 60) {
+            return "Good Match";
+        }
+
+        return "Needs Improvement";
+    };
+
+
+    /*
+     * Get badge variant based on match score.
+     */
+    const getMatchBadgeVariant = () => {
+
+        if (!jobMatch) {
+            return "info";
+        }
+
+        if (jobMatch.matchScore >= 80) {
+            return "success";
+        }
+
+        if (jobMatch.matchScore >= 60) {
+            return "info";
+        }
+
+        return "warning";
+    };
+
+
+    /*
+     * Job description from API.
+     */
+    const jobDescription =
+        jobMatch?.jobDescription ?? "";
+
 
     return (
         <Card>
@@ -36,7 +185,9 @@ function JobMatchOverviewCard() {
                 <div className="flex items-center gap-3">
 
                     <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50">
+
                         <Target className="h-5 w-5 text-emerald-600" />
+
                     </div>
 
                     <div>
@@ -53,15 +204,26 @@ function JobMatchOverviewCard() {
 
                 </div>
 
-                <Badge variant="success">
-                    Strong Match
+
+                <Badge
+                    variant={
+                        isLoading
+                            ? "info"
+                            : getMatchBadgeVariant()
+                    }
+                >
+
+                    {isLoading
+                        ? "Loading"
+                        : getMatchBadge()}
+
                 </Badge>
 
             </div>
 
 
             {/* ================================================= */}
-            {/* JOB TITLE */}
+            {/* JOB DESCRIPTION */}
             {/* ================================================= */}
 
             <div className="mt-6">
@@ -70,8 +232,13 @@ function JobMatchOverviewCard() {
                     Job Description
                 </p>
 
-                <h3 className="mt-1 text-base font-semibold text-slate-900">
-                    Java Spring Boot Developer
+                <h3 className="mt-1 line-clamp-2 text-base font-semibold text-slate-900">
+
+                    {isLoading
+                        ? "Loading..."
+                        : jobDescription ||
+                          "No job description available"}
+
                 </h3>
 
             </div>
@@ -94,28 +261,45 @@ function JobMatchOverviewCard() {
                         <div className="mt-1 flex items-end gap-2">
 
                             <span className="text-3xl font-bold tracking-tight text-slate-900">
-                                {matchScore}%
+
+                                {isLoading
+                                    ? "..."
+                                    : `${jobMatch?.matchScore ?? 0}%`}
+
                             </span>
 
-                            <span className="mb-1 text-sm font-medium text-emerald-600">
-                                Strong Match
-                            </span>
+
+                            {!isLoading && jobMatch && (
+
+                                <span className="mb-1 text-sm font-medium text-slate-500">
+
+                                    {getMatchBadge()}
+
+                                </span>
+
+                            )}
 
                         </div>
 
                     </div>
+
 
                     {/* Score indicator */}
 
                     <div className="flex h-14 w-14 items-center justify-center rounded-full border-4 border-emerald-100">
 
                         <span className="text-xs font-bold text-emerald-600">
-                            {matchScore}
+
+                            {isLoading
+                                ? "..."
+                                : jobMatch?.matchScore ?? 0}
+
                         </span>
 
                     </div>
 
                 </div>
+
 
                 {/* Progress */}
 
@@ -124,7 +308,7 @@ function JobMatchOverviewCard() {
                     <div
                         className="h-full rounded-full bg-emerald-500 transition-all duration-1000"
                         style={{
-                            width: `${matchScore}%`,
+                            width: `${jobMatch?.matchScore ?? 0}%`,
                         }}
                     />
 
@@ -149,18 +333,29 @@ function JobMatchOverviewCard() {
 
                 </div>
 
+
                 <div className="mt-3 flex flex-wrap gap-2">
 
-                    {matchingSkills.map((skill) => (
+                    {matchingSkills.length > 0 ? (
 
-                        <span
-                            key={skill}
-                            className="rounded-lg bg-emerald-50 px-2.5 py-1.5 text-xs font-medium text-emerald-700"
-                        >
-                            {skill}
+                        matchingSkills.map((skill) => (
+
+                            <span
+                                key={skill}
+                                className="rounded-lg bg-emerald-50 px-2.5 py-1.5 text-xs font-medium text-emerald-700"
+                            >
+                                {skill}
+                            </span>
+
+                        ))
+
+                    ) : (
+
+                        <span className="text-xs text-slate-400">
+                            No matching skills available
                         </span>
 
-                    ))}
+                    )}
 
                 </div>
 
@@ -183,18 +378,29 @@ function JobMatchOverviewCard() {
 
                 </div>
 
+
                 <div className="mt-3 flex flex-wrap gap-2">
 
-                    {missingSkills.map((skill) => (
+                    {missingSkills.length > 0 ? (
 
-                        <span
-                            key={skill}
-                            className="rounded-lg bg-rose-50 px-2.5 py-1.5 text-xs font-medium text-rose-700"
-                        >
-                            {skill}
+                        missingSkills.map((skill) => (
+
+                            <span
+                                key={skill}
+                                className="rounded-lg bg-rose-50 px-2.5 py-1.5 text-xs font-medium text-rose-700"
+                            >
+                                {skill}
+                            </span>
+
+                        ))
+
+                    ) : (
+
+                        <span className="text-xs text-slate-400">
+                            No missing skills available
                         </span>
 
-                    ))}
+                    )}
 
                 </div>
 
@@ -210,6 +416,18 @@ function JobMatchOverviewCard() {
                 <Button
                     variant="secondary"
                     size="sm"
+                    disabled={!jobMatch}
+                    onClick={() => {
+
+                        if (!jobMatch) {
+                            return;
+                        }
+
+                        navigate(
+                            `/job-matching/${jobMatch.jobMatchId}`
+                        );
+
+                    }}
                 >
                     View Full Match →
                 </Button>
