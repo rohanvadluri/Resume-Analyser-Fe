@@ -20,15 +20,10 @@ import {
 
 
 interface AuthContextType {
-
     user: AuthUser | null;
-
     isAuthenticated: boolean;
-
     isLoading: boolean;
-
     login: (request: LoginRequest) => Promise<void>;
-
     logout: () => void;
 }
 
@@ -39,9 +34,7 @@ const AuthContext = createContext<AuthContextType | undefined>(
 
 
 interface AuthProviderProps {
-
     children: ReactNode;
-
 }
 
 
@@ -49,23 +42,13 @@ export function AuthProvider({
     children,
 }: AuthProviderProps) {
 
-    /*
-     * Get previously logged-in user from localStorage.
-     *
-     * This allows the user to remain logged in
-     * even after refreshing the browser.
-     */
     const [user, setUser] = useState<AuthUser | null>(
         getAuthUser()
     );
 
-
     const [isLoading, setIsLoading] = useState(false);
 
 
-    /**
-     * Login User
-     */
     const login = async (
         request: LoginRequest
     ): Promise<void> => {
@@ -75,7 +58,6 @@ export function AuthProvider({
         try {
 
             const response = await loginUser(request);
-
 
             const authenticatedUser: AuthUser = {
 
@@ -95,16 +77,8 @@ export function AuthProvider({
 
             };
 
-
-            /*
-             * Save user in React state.
-             */
             setUser(authenticatedUser);
 
-
-            /*
-             * Save user in localStorage.
-             */
             saveAuthUser(authenticatedUser);
 
         } finally {
@@ -115,20 +89,10 @@ export function AuthProvider({
     };
 
 
-    /**
-     * Logout User
-     */
     const logout = () => {
 
-        /*
-         * Remove user from React state.
-         */
         setUser(null);
 
-
-        /*
-         * Remove user from localStorage.
-         */
         clearAuthUser();
 
     };
@@ -137,22 +101,14 @@ export function AuthProvider({
     return (
         <AuthContext.Provider
             value={{
-
                 user,
-
                 isAuthenticated: user !== null,
-
                 isLoading,
-
                 login,
-
                 logout,
-
             }}
         >
-
             {children}
-
         </AuthContext.Provider>
     );
 }
@@ -162,7 +118,6 @@ export function useAuthContext(): AuthContextType {
 
     const context = useContext(AuthContext);
 
-
     if (!context) {
 
         throw new Error(
@@ -170,7 +125,6 @@ export function useAuthContext(): AuthContextType {
         );
 
     }
-
 
     return context;
 }
