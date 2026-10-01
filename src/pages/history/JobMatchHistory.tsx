@@ -120,138 +120,272 @@ function JobMatchHistory() {
             )}
 
 
-            {/* HISTORY TABLE */}
+            {/* HISTORY */}
 
             {!isLoading && jobMatches.length > 0 && (
 
                 <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
-                    {/* TABLE HEADER */}
+                    {/* ================================================= */}
+                    {/* DESKTOP / TABLET */}
+                    {/* ================================================= */}
 
-                    <div className="grid grid-cols-12 border-b border-slate-200 bg-slate-50 px-6 py-4 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <div className="hidden md:block">
 
-                        <div className="col-span-3">
-                            Job Match
+                        {/* TABLE HEADER */}
+
+                        <div className="grid grid-cols-12 border-b border-slate-200 bg-slate-50 px-6 py-4 text-xs font-semibold uppercase tracking-wide text-slate-500">
+
+                            <div className="col-span-3">
+                                Job Match
+                            </div>
+
+                            <div className="col-span-2">
+                                Resume
+                            </div>
+
+                            <div className="col-span-2">
+                                Match Score
+                            </div>
+
+                            <div className="col-span-2">
+                                Status
+                            </div>
+
+                            <div className="col-span-2">
+                                Matched At
+                            </div>
+
+                            <div className="col-span-1 text-right">
+                                Action
+                            </div>
+
                         </div>
 
-                        <div className="col-span-2">
-                            Resume
-                        </div>
 
-                        <div className="col-span-2">
-                            Match Score
-                        </div>
+                        {/* DESKTOP ROWS */}
 
-                        <div className="col-span-2">
-                            Status
-                        </div>
+                        {jobMatches.map((jobMatch) => (
 
-                        <div className="col-span-2">
-                            Matched At
-                        </div>
+                            <div
+                                key={jobMatch.jobMatchId}
+                                className="grid grid-cols-12 items-center border-b border-slate-100 px-6 py-5 last:border-b-0"
+                            >
 
-                        <div className="col-span-1 text-right">
-                            Action
-                        </div>
+                                {/* JOB MATCH */}
+
+                                <div className="col-span-3">
+
+                                    <p className="text-sm font-semibold text-slate-900">
+                                        Job Match #{jobMatch.jobMatchId}
+                                    </p>
+
+                                    <p className="mt-1 text-xs text-slate-500">
+                                        User #{jobMatch.userId}
+                                    </p>
+
+                                </div>
+
+
+                                {/* RESUME */}
+
+                                <div className="col-span-2">
+
+                                    <p className="text-sm text-slate-700">
+                                        Resume #{jobMatch.resumeId}
+                                    </p>
+
+                                </div>
+
+
+                                {/* SCORE */}
+
+                                <div className="col-span-2">
+
+                                    <span className="text-lg font-bold text-indigo-600">
+                                        {jobMatch.matchScore}
+                                    </span>
+
+                                    <span className="ml-1 text-xs text-slate-400">
+                                        /100
+                                    </span>
+
+                                </div>
+
+
+                                {/* STATUS */}
+
+                                <div className="col-span-2">
+
+                                    <span className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-600">
+                                        {jobMatch.matchStatus}
+                                    </span>
+
+                                </div>
+
+
+                                {/* DATE */}
+
+                                <div className="col-span-2">
+
+                                    <p className="text-sm text-slate-600">
+                                        {new Date(
+                                            jobMatch.matchedAt
+                                        ).toLocaleString()}
+                                    </p>
+
+                                </div>
+
+
+                                {/* ACTION */}
+
+                                <div className="col-span-1 text-right">
+
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            handleViewMatch(
+                                                jobMatch.jobMatchId
+                                            )
+                                        }
+                                        className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-50"
+                                    >
+                                        View
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        ))}
 
                     </div>
 
 
-                    {/* ROWS */}
+                    {/* ================================================= */}
+                    {/* MOBILE */}
+                    {/* ================================================= */}
 
-                    {jobMatches.map((jobMatch) => (
+                    <div className="block md:hidden">
 
-                        <div
-                            key={jobMatch.jobMatchId}
-                            className="grid grid-cols-12 items-center border-b border-slate-100 px-6 py-5 last:border-b-0"
-                        >
+                        {jobMatches.map((jobMatch) => (
 
-                            {/* JOB MATCH */}
+                            <div
+                                key={jobMatch.jobMatchId}
+                                className="border-b border-slate-100 p-5 last:border-b-0"
+                            >
 
-                            <div className="col-span-3">
+                                {/* TOP */}
 
-                                <p className="text-sm font-semibold text-slate-900">
-                                    Job Match #{jobMatch.jobMatchId}
-                                </p>
+                                <div className="flex items-start justify-between gap-4">
 
-                                <p className="mt-1 text-xs text-slate-500">
-                                    User #{jobMatch.userId}
-                                </p>
+                                    <div>
+
+                                        <p className="text-base font-semibold text-slate-900">
+                                            Job Match #{jobMatch.jobMatchId}
+                                        </p>
+
+                                        <p className="mt-1 text-xs text-slate-500">
+                                            User #{jobMatch.userId}
+                                        </p>
+
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            handleViewMatch(
+                                                jobMatch.jobMatchId
+                                            )
+                                        }
+                                        className="shrink-0 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-50"
+                                    >
+                                        View
+                                    </button>
+
+                                </div>
+
+
+                                {/* DETAILS */}
+
+                                <div className="mt-5 space-y-3">
+
+                                    {/* RESUME */}
+
+                                    <div className="flex items-center justify-between gap-4">
+
+                                        <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                                            Resume
+                                        </span>
+
+                                        <span className="text-sm font-medium text-slate-700">
+                                            Resume #{jobMatch.resumeId}
+                                        </span>
+
+                                    </div>
+
+
+                                    {/* SCORE */}
+
+                                    <div className="flex items-center justify-between gap-4">
+
+                                        <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                                            Match Score
+                                        </span>
+
+                                        <div>
+
+                                            <span className="text-lg font-bold text-indigo-600">
+                                                {jobMatch.matchScore}
+                                            </span>
+
+                                            <span className="ml-1 text-xs text-slate-400">
+                                                /100
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    {/* STATUS */}
+
+                                    <div className="flex items-center justify-between gap-4">
+
+                                        <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                                            Status
+                                        </span>
+
+                                        <span className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-600">
+                                            {jobMatch.matchStatus}
+                                        </span>
+
+                                    </div>
+
+
+                                    {/* DATE */}
+
+                                    <div className="flex items-start justify-between gap-4">
+
+                                        <span className="pt-1 text-xs font-medium uppercase tracking-wide text-slate-400">
+                                            Matched At
+                                        </span>
+
+                                        <span className="max-w-[60%] text-right text-sm text-slate-600">
+                                            {new Date(
+                                                jobMatch.matchedAt
+                                            ).toLocaleString()}
+                                        </span>
+
+                                    </div>
+
+                                </div>
 
                             </div>
 
+                        ))}
 
-                            {/* RESUME */}
-
-                            <div className="col-span-2">
-
-                                <p className="text-sm text-slate-700">
-                                    Resume #{jobMatch.resumeId}
-                                </p>
-
-                            </div>
-
-
-                            {/* SCORE */}
-
-                            <div className="col-span-2">
-
-                                <span className="text-lg font-bold text-indigo-600">
-                                    {jobMatch.matchScore}
-                                </span>
-
-                                <span className="ml-1 text-xs text-slate-400">
-                                    /100
-                                </span>
-
-                            </div>
-
-
-                            {/* STATUS */}
-
-                            <div className="col-span-2">
-
-                                <span className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-600">
-                                    {jobMatch.matchStatus}
-                                </span>
-
-                            </div>
-
-
-                            {/* DATE */}
-
-                            <div className="col-span-2">
-
-                                <p className="text-sm text-slate-600">
-                                    {new Date(
-                                        jobMatch.matchedAt
-                                    ).toLocaleString()}
-                                </p>
-
-                            </div>
-
-
-                            {/* ACTION */}
-
-                            <div className="col-span-1 text-right">
-
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        handleViewMatch(
-                                            jobMatch.jobMatchId
-                                        )
-                                    }
-                                    className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-50"
-                                >
-                                    View
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                    ))}
+                    </div>
 
                 </div>
 
@@ -262,7 +396,7 @@ function JobMatchHistory() {
 
             {!isLoading && totalPages > 1 && (
 
-                <div className="mt-6 flex items-center justify-between">
+                <div className="mt-6 flex items-center justify-between gap-3">
 
                     <button
                         type="button"
@@ -273,7 +407,7 @@ function JobMatchHistory() {
                         Previous
                     </button>
 
-                    <p className="text-sm text-slate-500">
+                    <p className="whitespace-nowrap text-sm text-slate-500">
                         Page {page + 1} of {totalPages}
                     </p>
 
