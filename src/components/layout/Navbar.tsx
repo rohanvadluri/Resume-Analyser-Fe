@@ -1,12 +1,12 @@
 import { useState } from "react";
 
 import {
-    Bell,
+    // Bell,
     ChevronDown,
     LogOut,
     Menu,
     Moon,
-    Search,
+    // Search,
     Sun,
 } from "lucide-react";
 
@@ -93,7 +93,7 @@ function Navbar({ onMenuClick }: NavbarProps) {
                 {/* SEARCH */}
                 {/* ================================================= */}
 
-                <button
+                {/* <button
                     type="button"
                     className="hidden items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-400 transition-colors hover:border-slate-300 hover:text-slate-600 md:flex"
                 >
@@ -108,14 +108,14 @@ function Navbar({ onMenuClick }: NavbarProps) {
                         ⌘ K
                     </span>
 
-                </button>
+                </button> */}
 
 
                 {/* ================================================= */}
                 {/* NOTIFICATION */}
                 {/* ================================================= */}
 
-                <button
+                {/* <button
                     type="button"
                     aria-label="Notifications"
                     className="relative rounded-xl p-2.5 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700"
@@ -125,7 +125,7 @@ function Navbar({ onMenuClick }: NavbarProps) {
 
                     <span className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-indigo-600 ring-2 ring-white" />
 
-                </button>
+                </button> */}
 
 
                 {/* ================================================= */}
